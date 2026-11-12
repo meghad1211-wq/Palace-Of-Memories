@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Palace of Memories</title>
+<meta name="theme-color" content="#07060d">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="favicon-16.png" type="image/png" sizes="16x16">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Palace of Memories">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07060d;--ink:#f4ecd8;--mute:#a99f8f;--gold:#d9b66a;--gold2:#f6e2a8;--line:rgba(217,182,106,.3);--serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse 80% 60% at 50% 0,#2b1a40,#130d21 50%,var(--bg) 90%);color:var(--ink);font:16px/1.6 system-ui,-apple-system,'Segoe UI',sans-serif;overflow-x:hidden}
+h1,h2,h3{font-family:var(--serif);font-weight:600;margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,.in:focus-visible{outline:2px solid var(--gold2);outline-offset:3px}
+.eyebrow{font-size:.74rem;letter-spacing:.28em;color:var(--gold);margin:0 0 .5rem}
+.gold{background:linear-gradient(100deg,#b88a3e,#f6e2a8 45%,#c9a14f);-webkit-background-clip:text;background-clip:text;color:transparent}
+.btn{padding:.9rem 1.8rem;border-radius:999px;border:1px solid var(--gold);background:linear-gradient(#3a2a14,#20160a);color:var(--gold2);letter-spacing:.14em;font-size:.82rem;box-shadow:0 0 30px -6px var(--gold),inset 0 0 18px rgba(246,226,168,.15);transition:.4s}
+.btn:hover{box-shadow:0 0 50px -2px var(--gold);transform:translateY(-2px)}
+.ghost{background:none;border:1px solid var(--line);border-radius:999px;padding:.5rem 1rem;color:var(--gold2);font-size:.85rem}
+.sub{color:var(--mute);max-width:56ch;margin:.6rem auto}
+.note{text-align:center;color:var(--mute);font-size:.78rem;opacity:.7}
+@keyframes breathe{50%{transform:scale(1.08);opacity:.75}}
+@keyframes pulse{50%{opacity:.55}}
+@keyframes rise{from{opacity:0;transform:translateY(26px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes shake{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+@keyframes float{10%{opacity:.8}100%{transform:translateY(-105vh) translateX(30px);opacity:0}}
+/* Entrance */
+#gate{position:fixed;inset:0;z-index:40;perspective:1600px;background:#05040a;overflow:hidden;transition:opacity 1.2s}
+#gate.gone{opacity:0;pointer-events:none}
+.beyond{position:absolute;inset:0;background:radial-gradient(circle at 50% 55%,#fff6d6 0,#f1cf7e 14%,#7a4a8f 40%,#05040a 75%);opacity:0;transform:scale(.6);transition:opacity 1.6s,transform 2.4s}
+#gate.open .beyond{opacity:1;transform:scale(1.5)}
+.leaf{position:absolute;top:0;bottom:0;width:50%;background:linear-gradient(90deg,#150d1f,#2a1838 60%,#1a1026);border:1px solid var(--line);backface-visibility:hidden;transition:transform 2.2s cubic-bezier(.65,0,.2,1)}
+.leaf.l{left:0;transform-origin:0 50%}
+.leaf.r{right:0;transform-origin:100% 50%}
+#gate.open .l{transform:rotateY(84deg)}
+#gate.open .r{transform:rotateY(-84deg)}
+.leaf::before{content:'';position:absolute;inset:7% 9% 5%;border:2px solid var(--line);box-shadow:inset 0 0 40px rgba(217,182,106,.12),0 0 24px rgba(217,182,106,.08);background:repeating-linear-gradient(90deg,transparent 0 22px,rgba(217,182,106,.05) 22px 23px)}
+.l::before{border-radius:46vw 0 0 0/26vh 0 0 0}
+.r::before{border-radius:0 46vw 0 0/0 26vh 0 0}
+.leaf i{position:absolute;top:52%;width:16px;height:16px;border-radius:50%;background:radial-gradient(#fff2c4,#b88a3e);box-shadow:0 0 18px var(--gold)}
+.l i{right:14px}.r i{left:14px}
+.gate-ui{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;text-align:center;gap:1rem;padding:1.5rem;z-index:3;transition:opacity .8s}
+#gate.open .gate-ui{opacity:0;pointer-events:none}
+.gate-ui h1{font-size:clamp(2.8rem,12vw,6.2rem);line-height:1}
+.gate-ui p{max-width:30ch;color:var(--mute);margin:0}
+.ring{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;font-size:1.6rem;color:var(--gold2);border:1px solid var(--gold);box-shadow:0 0 40px var(--gold),inset 0 0 20px rgba(246,226,168,.4);animation:breathe 3.5s ease-in-out infinite}
+#dust{position:fixed;inset:0;pointer-events:none;z-index:1}
+#dust s{position:absolute;bottom:-10px;width:var(--s);height:var(--s);border-radius:50%;background:var(--gold2);box-shadow:0 0 8px var(--gold);opacity:0;animation:float var(--d) linear infinite}
+.pil{position:fixed;top:0;bottom:0;width:clamp(12px,4.5vw,64px);z-index:1;pointer-events:none;background:repeating-linear-gradient(90deg,rgba(246,226,168,.09) 0 3px,rgba(246,226,168,.01) 3px 10px);border:1px solid var(--line);border-top:0;border-bottom:0;box-shadow:0 0 60px rgba(217,182,106,.1)}
+.pil.l{left:0}.pil.r{right:0}
+/* Views */
+.view{position:relative;z-index:2;max-width:1080px;margin:0 auto;padding:1.2rem clamp(24px,7vw,90px) 7rem;animation:rise 1s both}
+.top{display:flex;justify-content:space-between;align-items:center;gap:.8rem;flex-wrap:wrap}
+.brand{font:700 1.4rem var(--serif)}
+.who{display:flex;gap:.4rem;align-items:center;font-size:.8rem;color:var(--mute)}
+.hall{position:relative;text-align:center;padding:2.6rem 0 1rem}
+.hall::before{content:'';position:absolute;left:50%;top:-120px;width:min(620px,120vw);aspect-ratio:1;transform:translateX(-50%);background:radial-gradient(circle,rgba(246,226,168,.22),transparent 62%);pointer-events:none;animation:pulse 6s ease-in-out infinite}
+.hall::after{content:'';position:absolute;left:50%;top:-60px;width:150%;height:440px;transform:translateX(-50%);pointer-events:none;background:conic-gradient(from 180deg at 50% 0,transparent 0,rgba(246,226,168,.09) 4%,transparent 9%,transparent 91%,rgba(246,226,168,.09) 96%,transparent 100%);-webkit-mask-image:linear-gradient(#000,transparent);mask-image:linear-gradient(#000,transparent)}
+.hall>*{position:relative;z-index:1}
+.hall h2{font-size:clamp(2.4rem,9vw,4.6rem);line-height:1.05}
+.doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.6rem;margin-top:2rem}
+.door{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:.35rem;min-height:340px;padding:3.2rem 1.2rem 1.4rem;border:1px solid var(--line);border-radius:120px 120px 18px 18px;background:radial-gradient(ellipse 80% 55% at 50% 105%,rgba(246,226,168,.28),transparent 70%),linear-gradient(#1c1229,#0e0916);box-shadow:0 30px 60px -30px #000,inset 0 0 40px rgba(217,182,106,.06);animation:rise .9s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i)*120ms);transition:transform .5s,box-shadow .5s,border-color .5s}
+.door:hover{transform:translateY(-8px);border-color:var(--gold);box-shadow:0 40px 80px -30px rgba(217,182,106,.5),inset 0 0 60px rgba(246,226,168,.14)}
+.sig{font-size:2.1rem;width:74px;height:74px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line);background:rgba(246,226,168,.07);box-shadow:0 0 30px -4px rgba(246,226,168,.45)}
+.door h3{font-size:1.65rem;line-height:1.1;margin-top:.5rem}
+.meta{font-size:.78rem;letter-spacing:.1em;color:var(--gold)}
+.door small{color:var(--mute)}
+.enter{margin-top:auto;color:var(--gold2);font-size:.85rem;letter-spacing:.12em}
+.new{border-style:dashed;background:radial-gradient(ellipse 80% 55% at 50% 105%,rgba(246,226,168,.1),transparent 70%)}
+.avs{display:flex;justify-content:center;margin:.5rem 0}
+.av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:.78rem;font-weight:700;color:#12091c;background:var(--c);border:2px solid #130d21;margin-left:-8px;box-shadow:0 0 12px -2px var(--c)}
+.av:first-child{margin-left:0}
+.vows{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.2rem;margin:3.5rem 0 1.5rem;text-align:center;color:var(--mute);font-size:.9rem}
+.vows b{display:block;font:600 1.3rem var(--serif);color:var(--gold2)}
+.roomhead{text-align:center;padding:1.8rem 0 1.4rem}
+.roomhead h2{font-size:clamp(2.2rem,8vw,4rem);line-height:1.05}
+.badge{display:inline-block;padding:.3rem .9rem;border:1px solid var(--line);border-radius:999px;font-size:.78rem;letter-spacing:.1em;color:var(--gold);margin-bottom:.8rem}
+.cards{columns:2 280px;column-gap:1.3rem}
+.card{position:relative;overflow:hidden;break-inside:avoid;margin:0 0 1.3rem;padding:1.4rem;border-radius:18px;border:1px solid var(--line);background:linear-gradient(160deg,rgba(255,248,230,.07),rgba(255,248,230,.015));backdrop-filter:blur(6px);animation:rise .8s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i)*90ms);transition:transform .4s,box-shadow .4s}
+.card::before{content:'';position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,transparent,var(--c),transparent)}
+.card:hover{transform:translateY(-6px) rotate(-.4deg);box-shadow:0 24px 50px -24px var(--c)}
+.card .em{font-size:1.7rem}
+.card h3{font-size:1.55rem;margin:.3rem 0}
+.card p{margin:0 0 1rem;color:#d8cfbe}
+.by{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--mute)}
+.by .av{margin:0;width:24px;height:24px;font-size:.66rem}
+.ph{display:block;width:calc(100% + 2.8rem);max-width:none;margin:-1.4rem -1.4rem 1rem;max-height:360px;object-fit:cover;cursor:zoom-in}
+.pick{display:grid;place-items:center;gap:.5rem;margin:.4rem 0 1rem;padding:1rem;border:1px dashed var(--gold);border-radius:14px;color:var(--gold2);text-align:center;cursor:pointer;background:rgba(246,226,168,.04);transition:.3s}
+.pick:hover{background:rgba(246,226,168,.1)}
+.pick img{width:100%;max-height:220px;object-fit:cover;border-radius:10px}
+.big{display:block;width:100%;border-radius:14px}
+.fab{position:fixed;left:50%;bottom:calc(1.2rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:20}
+.fab:hover{transform:translateX(-50%) translateY(-2px)}
+/* Sheet, toast, veil */
+#sheet{position:fixed;inset:0;z-index:30;display:grid;place-items:end center;background:rgba(4,3,10,.7);backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:.35s}
+#sheet.on{opacity:1;pointer-events:auto}
+.pane{width:min(520px,100%);max-height:90vh;overflow:auto;background:linear-gradient(#1b1228,#110b1b);border:1px solid var(--line);border-radius:26px 26px 0 0;padding:26px 22px calc(26px + env(safe-area-inset-bottom,0px));transform:translateY(40px);transition:.4s}
+#sheet.on .pane{transform:none}
+@media(min-width:700px){#sheet{place-items:center}.pane{border-radius:26px}}
+.pane h3{font-size:2rem;margin-bottom:1rem}
+.in{width:100%;padding:.85rem 1rem;border-radius:12px;border:1px solid var(--line);background:rgba(255,248,230,.05);color:var(--ink);font:inherit;margin:.4rem 0 1rem}
+.in:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,182,106,.18)}
+textarea.in{min-height:110px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.4rem 0 1rem}
+.chip{padding:.5rem .9rem;border-radius:999px;border:1px solid var(--line);background:none;color:var(--ink)}
+.chip.on{background:var(--gold);color:#1a1208;border-color:var(--gold)}
+.pane .sub{margin:0 0 1rem;max-width:none}
+#toast{position:fixed;left:50%;bottom:calc(5.5rem + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);z-index:60;padding:.8rem 1.3rem;border-radius:14px;background:#1d1329;border:1px solid var(--gold);color:var(--gold2);opacity:0;pointer-events:none;transition:.4s;max-width:88vw;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#veil{position:fixed;inset:0;z-index:50;background:radial-gradient(circle,#fff3c8 0,#e9c874 25%,#07060d 70%);opacity:0;pointer-events:none;transition:opacity .45s}
+#veil.on{opacity:1}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+.authbox{max-width:420px;margin:1.5rem auto 0;text-align:left;padding:1.6rem;border:1px solid var(--line);border-radius:20px;background:linear-gradient(160deg,rgba(255,248,230,.07),rgba(255,248,230,.015))}
+.authbox label{display:block;font-size:.74rem;letter-spacing:.2em;color:var(--gold)}
+.rules{list-style:none;margin:-.4rem 0 1rem;padding:0;font-size:.82rem;color:var(--mute)}
+.rules li::before{content:'○ '}.rules li.ok{color:#9be3c1}.rules li.ok::before{content:'✓ '}
+.err{color:#ffb3a1;font-size:.88rem;min-height:1.2em;margin:0 0 .8rem}
+.row{display:flex;gap:.5rem;align-items:flex-start}.row .in{flex:1}
+.hdr{display:flex;gap:.6rem;align-items:center}
+.authbox .btn{width:100%}
+/* Take down + new-memory alerts */
+.by .del{margin-left:auto;background:none;border:1px solid var(--line);border-radius:999px;padding:.34rem .85rem;font-size:.74rem;color:var(--mute);transition:.3s}
+.by .del:hover,.by .del:focus-visible{color:#ffb3a1;border-color:#ffb3a1}
+.btn.warn{border-color:#ffb3a1;color:#ffd9cf;background:linear-gradient(#3d1a14,#22100b);box-shadow:0 0 30px -6px #ff8a70,inset 0 0 18px rgba(255,179,161,.15)}
+.btn.warn:hover{box-shadow:0 0 50px -2px #ff8a70}
+.btn:disabled{opacity:.6;cursor:wait}
+.acts{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center}
+.flag{position:absolute;top:.8rem;right:.8rem;z-index:2;padding:.15rem .7rem;border-radius:999px;background:var(--gold);color:#1a1208;font-size:.68rem;font-weight:700;letter-spacing:.14em;box-shadow:0 0 16px var(--gold)}
+.card.fresh{border-color:var(--gold)}
+.dot{position:absolute;top:1.1rem;left:50%;transform:translateX(-50%);z-index:2;padding:.15rem .8rem;border-radius:999px;background:var(--gold);color:#1a1208;font-size:.72rem;font-weight:700;letter-spacing:.1em;white-space:nowrap;box-shadow:0 0 18px var(--gold);animation:pulse 2.4s ease-in-out infinite}
+.door.has-new{border-color:var(--gold);box-shadow:0 30px 60px -30px rgba(217,182,106,.45),inset 0 0 50px rgba(246,226,168,.12)}
+#toast.on[data-r]{pointer-events:auto;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="dust"></div><i class="pil l"></i><i class="pil r"></i>
+
+<section id="gate" aria-label="Palace entrance">
+  <div class="beyond"></div>
+  <div class="leaf l"><i></i></div><div class="leaf r"><i></i></div>
+  <div class="gate-ui">
+    <div class="ring">✦</div>
+    <h1 class="gold">Palace of Memories</h1>
+    <p>Every memory has its own door. Only the right hands can open it.</p>
+    <button class="btn" id="knock">Open the doors</button>
+  </div>
+</section>
+
+<main id="auth" class="view" hidden>
+  <header class="top"><span class="brand gold">Palace of Memories</span></header>
+  <section class="hall">
+    <p class="eyebrow">The Entrance</p>
+    <h2 id="atitle">Who goes there?</h2>
+    <p class="sub">Your email and a strong password are your key. Nobody can open your chambers without it.</p>
+  </section>
+  <form class="authbox" id="af" autocomplete="on" novalidate>
+    <div class="chips" id="am"></div>
+    <div id="nw"><label for="an">YOUR NAME</label>
+    <input id="an" class="in" maxlength="24" autocomplete="name" placeholder="How friends will find and invite you"></div>
+    <div id="ew"><label for="ae">EMAIL</label>
+    <input id="ae" class="in" type="email" autocomplete="email" placeholder="you@example.com"></div>
+    <div id="pw"><label for="ap" id="apl">PASSWORD</label>
+    <input id="ap" class="in" type="password" autocomplete="current-password" placeholder="Your password"></div>
+    <ul class="rules" id="rules" hidden></ul>
+    <div id="p2w" hidden><label for="ap2">REPEAT PASSWORD</label>
+    <input id="ap2" class="in" type="password" autocomplete="new-password" placeholder="Repeat password"></div>
+    <p class="err" id="aerr" role="alert"></p>
+    <p class="err" id="aok" role="status" style="color:#9be3c1"></p>
+    <button class="btn" id="ab" type="submit">Enter</button>
+    <p class="note" style="margin:1rem 0 0"><button class="ghost" id="fg" type="button">Forgot password?</button></p>
+  </form>
+</main>
+
+<main id="hub" class="view" hidden>
+  <header class="top"><span class="brand gold">Palace of Memories</span>
+    <div class="who"><span id="me"></span><button class="ghost" id="bell" hidden></button><button class="ghost" id="out">Sign out</button></div></header>
+  <section class="hall">
+    <p class="eyebrow">The Grand Hall</p>
+    <h2 id="greet"></h2>
+    <p class="sub">Each door is a private world. Only the people invited inside can see it. Duo chambers hold two keys, and group halls can hold as many friends as you like.</p>
+  </section>
+  <div id="doors" class="doors"></div>
+  <div class="vows">
+    <div><b>Your own key</b>Your email and a strong password. Nobody else can sign in as you.</div>
+    <div><b>Invite only</b>A chamber is invisible to anyone who was not invited in.</div>
+    <div><b>Room for everyone</b>Duos for two, halls for as many people as you want.</div>
+  </div>
+</main>
+
+<main id="room" class="view" hidden>
+  <header class="top"><button class="ghost" id="back">← Grand Hall</button><span class="hdr"><span class="avs" id="rmem"></span><button class="ghost" id="inv" hidden>Invite</button></span></header>
+  <section class="roomhead">
+    <span class="badge" id="rbadge"></span>
+    <h2 class="gold" id="rname"></h2>
+    <p class="sub" id="rsub"></p>
+  </section>
+  <div class="cards" id="cards"></div>
+  <button class="btn fab" id="add">Hang a memory</button>
+</main>
+
+<div id="sheet"><div class="pane"></div></div>
+<div id="toast" role="status"></div>
+<div id="veil"></div>
+
+<script src="config.js"></script>
+<script>
+const CFG=window.PALACE||{},SB=(CFG.url||'').replace(/\/$/,''),KEY=CFG.key||'',live=!!(SB&&KEY);
+const SK='palace-session-v2';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const COLORS=['#f0a6c4','#8fb8ff','#9be3c1','#f6c98f','#c9a8ff','#ffb3a1'];
+const colorOf=id=>{let h=0;for(const c of String(id))h=(h*31+c.charCodeAt(0))>>>0;return COLORS[h%COLORS.length]};
+const av=(id,n)=>`<b class="av" style="--c:${colorOf(id)}" title="${esc(n)}">${esc([...String(n||'?')][0].toUpperCase())}</b>`;
+const uname=n=>{const t=String(n).trim().replace(/\s+/g,' ').toLowerCase();return /^[a-z0-9 ._-]+$/.test(t)?t.replace(/[ ._-]+/g,'-').replace(/^-+|-+$/g,''):'u-'+[...t].map(c=>c.codePointAt(0).toString(16)).join('-')};
+let tt;const toast=(m,rid)=>{const t=$('#toast');t.textContent=m;if(rid)t.dataset.r=rid;else delete t.dataset.r;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),rid?6500:3200)};
+const go=fn=>{const v=$('#veil');v.classList.add('on');setTimeout(()=>{fn();scrollTo(0,0);v.classList.remove('on')},520)};
+const show=id=>['auth','hub','room'].forEach(v=>$('#'+v).hidden=v!==id);
+function sheet(h){$('#sheet .pane').innerHTML=h;$('#sheet').classList.add('on')}
+const shut=()=>$('#sheet').classList.remove('on');
+
+let S=null,cur=null,rooms=[];
+try{S=JSON.parse(localStorage.getItem(SK)||'null')}catch(e){}
+const myId=()=>S&&S.user&&S.user.id;
+const myName=()=>(S&&S.user&&S.user.user_metadata&&S.user.user_metadata.display_name)||'';
+function setSession(j){S={access_token:j.access_token,refresh_token:j.refresh_token,expires_at:Date.now()+(j.expires_in||3600)*1000-60000,user:j.user||S.user};try{localStorage.setItem(SK,JSON.stringify(S))}catch(e){}}
+async function authCall(path,body){
+  const r=await fetch(SB+'/auth/v1/'+path,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(j.msg||j.error_description||j.message||('Error '+r.status));
+  return j}
+async function token(){
+  if(!S)throw new Error('Please sign in');
+  if(Date.now()>S.expires_at){try{setSession(await authCall('token?grant_type=refresh_token',{refresh_token:S.refresh_token}))}catch(e){signOut();throw new Error('Please sign in again')}}
+  return S.access_token}
+async function api(p,o={}){
+  const t=await token();
+  const r=await fetch(SB+p,{...o,headers:{apikey:KEY,Authorization:'Bearer '+t,...(o.headers||{})}});
+  const x=await r.text();let j=null;try{j=JSON.parse(x)}catch(e){}
+  if(!r.ok){if(r.status===401){signOut();throw new Error('Please sign in again')}throw new Error((j&&(j.message||j.error))||('Error '+r.status))}
+  return j}
+const rpc=(fn,args)=>api('/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(args)});
+function signOut(){S=null;rooms=[];cur=null;resetAlerts();try{localStorage.removeItem(SK)}catch(e){}shut();if(!$('#gate'))showAuth('in')}
+
+const sigCache={};
+async function sign(paths){
+  const need=[...new Set(paths.filter(p=>p&&!(sigCache[p]&&sigCache[p].exp>Date.now())))];
+  if(!need.length)return;
+  const j=await api('/storage/v1/object/sign/photos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({expiresIn:3600,paths:need})});
+  (j||[]).forEach(x=>{if(x.signedURL)sigCache[x.path||'']={u:SB+'/storage/v1'+x.signedURL,exp:Date.now()+3000000}})}
+
+const MAXPX=2000,QUALITY=.92;
+const shrink=f=>new Promise((ok,no)=>{const r=new FileReader();r.onerror=no;r.onload=()=>{const i=new Image();i.onerror=no;i.onload=()=>{const k=Math.min(1,MAXPX/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);const g=c.getContext('2d');g.imageSmoothingQuality='high';g.drawImage(i,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',QUALITY))};i.src=r.result};r.readAsDataURL(f)});
+
+async function load(){
+  const rs=await api('/rest/v1/rooms?select=id,type,name,e,owner,room_members(user_id,profiles(display_name)),memories(id,title,note,photo,author_id,emoji,day,profiles(display_name))&order=created_at&memories.order=created_at.desc');
+  rooms=(rs||[]).map(r=>({id:r.id,type:r.type,name:r.name,e:r.e,owner:r.owner,
+    m:(r.room_members||[]).map(x=>({id:x.user_id,n:(x.profiles&&x.profiles.display_name)||'?'})),
+    mem:(r.memories||[]).map(x=>({id:String(x.id),t:x.title,x:x.note,p:x.photo,by:x.author_id,bn:(x.profiles&&x.profiles.display_name)||'?',e:x.emoji,d:x.day}))}));
+  if(cur)cur=rooms.find(r=>r.id===cur.id)||null;
+  initSeen()}
+const sig=()=>JSON.stringify(rooms.map(r=>[r.id,r.m.length,r.mem.map(m=>m.id)]));
+
+/* ---------- Unread marks and alerts ---------- */
+/* "seen" is the list of memory ids this person has already looked at, kept on this device.
+   The first time the page runs, everything already on the walls counts as seen. */
+let seen=null,seenFor=null,told=new Set(),NEW=new Set(),MISSED=[],HELLO=false;
+const SEENK=()=>'palace-seen-v1:'+myId(),MUTEK='palace-alerts-muted';
+const unread=r=>seen?r.mem.filter(m=>m.by!==myId()&&!seen.has(m.id)):[];
+const totalUnread=()=>rooms.reduce((n,r)=>n+unread(r).length,0);
+function saveSeen(){try{localStorage.setItem(SEENK(),JSON.stringify([...seen]))}catch(e){}}
+function initSeen(){
+  if(seen&&seenFor===myId())return;
+  seenFor=myId();seen=null;
+  try{const raw=localStorage.getItem(SEENK());if(raw)seen=new Set(JSON.parse(raw))}catch(e){}
+  if(!seen){seen=new Set(rooms.flatMap(r=>r.mem.map(m=>m.id)));saveSeen()}
+  told=new Set(rooms.flatMap(r=>unread(r).map(m=>m.id)));
+  HELLO=true}
+function markSeen(r){
+  if(!r||!seen||document.hidden)return;
+  let ch=false;r.mem.forEach(m=>{if(!seen.has(m.id)){seen.add(m.id);ch=true}});
+  if(ch)saveSeen();
+  refreshTitle()}
+function refreshTitle(){const n=S&&seen?totalUnread():0;document.title=(n?'('+n+') ':'')+'Palace of Memories'}
+function resetAlerts(){seen=null;seenFor=null;told=new Set();NEW=new Set();MISSED=[];HELLO=false;document.title='Palace of Memories'}
+function arrivals(){const out=[];rooms.forEach(r=>unread(r).forEach(m=>{if(!told.has(m.id)){told.add(m.id);out.push({r,m})}}));return out}
+
+const canNote=()=>typeof Notification!=='undefined';
+const muted=()=>{try{return localStorage.getItem(MUTEK)==='1'}catch(e){return false}};
+const setMuted=v=>{try{v?localStorage.setItem(MUTEK,'1'):localStorage.removeItem(MUTEK)}catch(e){}};
+const alertsOn=()=>canNote()&&Notification.permission==='granted'&&!muted();
+function sysNote(body,rid){
+  if(!alertsOn())return;
+  try{const n=new Notification('Palace of Memories',{body,tag:'palace-new',renotify:true});
+    n.onclick=()=>{window.focus();n.close();if(rid&&S)enterRoom(rid)}}catch(e){}}
+function announce(list){
+  if(!list.length)return;
+  const first=list[0],rid=list.every(x=>x.r.id===first.r.id)?first.r.id:'';
+  const msg=list.length===1?`${first.m.e||'✨'} ${first.m.bn} hung “${first.m.t}” in ${first.r.name}`:`✨ ${list.length} new memories ${rid?'in '+first.r.name:'on your walls'}`;
+  if(document.hidden){MISSED.push(...list);sysNote(msg,rid)}
+  else toast(msg,cur&&cur.id===rid?'':rid);
+  refreshTitle()}
+function hello(){if(!HELLO)return;HELLO=false;const n=totalUnread();if(n)toast(`✨ ${n} new ${n===1?'memory is':'memories are'} waiting for you`)}
+function drawBell(){
+  const b=$('#bell');if(!b)return;
+  if(!canNote()){b.hidden=true;return}
+  const p=Notification.permission;b.hidden=false;
+  b.textContent=p==='denied'?'🔕 Alerts blocked':p==='granted'?(muted()?'🔕 Alerts off':'🔔 Alerts on'):'🔔 Get alerts'}
+async function toggleBell(){
+  if(!canNote())return;
+  const p=Notification.permission;
+  if(p==='denied')toast('Alerts are blocked for this site. Allow notifications in your browser’s site settings, then try again.');
+  else if(p==='default'){
+    let r='denied';try{r=await Notification.requestPermission()}catch(e){}
+    if(r==='granted'){setMuted(false);toast('🔔 Alerts on. You will be pinged when someone hangs a memory while this tab is open.')}
+    else toast('No problem. New memories will still glow inside the palace.')}
+  else{const off=!muted();setMuted(off);toast(off?'🔕 Alerts muted on this device.':'🔔 Alerts are back on.')}
+  drawBell()}
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden||!S)return;
+  if(cur&&!$('#room').hidden)markSeen(cur);
+  const l=MISSED;MISSED=[];if(l.length)announce(l);
+  refreshTitle()});
+
+for(let i=0;i<26;i++){const s=document.createElement('s');s.style.cssText=`left:${Math.random()*100}%;--d:${8+Math.random()*10}s;--s:${1+Math.random()*3}px;animation-delay:-${Math.random()*14}s`;$('#dust').append(s)}
+
+/* ---------- Entrance and accounts ---------- */
+async function afterGate(){
+  if(!live){showAuth('in');return}
+  if(S){try{await load();hub();return}catch(e){}}
+  showAuth('in')}
+function openGate(){const g=$('#gate');g.classList.add('open');setTimeout(()=>{g.classList.add('gone');afterGate()},2300);setTimeout(()=>g.remove(),3700)}
+
+const RULES=[['At least 10 characters',p=>p.length>=10],['An uppercase letter',p=>/[A-Z]/.test(p)],['A lowercase letter',p=>/[a-z]/.test(p)],['A number',p=>/\d/.test(p)],['A symbol such as ! ? # @',p=>/[^A-Za-z0-9]/.test(p)],['Does not contain your name',(p,n)=>{const k=n.toLowerCase().replace(/\s+/g,'');return k.length<3||!p.toLowerCase().includes(k)}]];
+const EMAIL=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+let mode='in',RECOVERY=null;
+(function(){const q=new URLSearchParams(location.hash.slice(1));
+  if(q.get('type')==='recovery'&&q.get('access_token'))RECOVERY={token:q.get('access_token')};
+  else if(q.get('error_description'))RECOVERY={error:q.get('error_description')}})();
+function drawRules(){const p=$('#ap').value,n=$('#an').value;$('#rules').innerHTML=RULES.map(([l,f])=>`<li class="${f(p,n)?'ok':''}">${l}</li>`).join('')}
+function showAuth(m){
+  mode=m||'in';show('auth');
+  const tabs=mode==='reset'?'':[['in','Sign in'],['up','Create account']].map(([k,l])=>`<button type="button" class="chip${k===mode?' on':''}" data-m="${k}">${l}</button>`).join('');
+  $('#am').innerHTML=tabs;
+  $('#atitle').textContent={in:'Who goes there?',up:'Make your key',forgot:'Lost your key?',reset:'Choose a new password'}[mode];
+  $('#ab').textContent={in:'Enter',up:'Create my account',forgot:'Send reset link',reset:'Save new password'}[mode];
+  $('#nw').hidden=mode!=='up';
+  $('#ew').hidden=mode==='reset';
+  $('#pw').hidden=mode==='forgot';
+  $('#apl').textContent=mode==='reset'?'NEW PASSWORD':'PASSWORD';
+  $('#rules').hidden=$('#p2w').hidden=!(mode==='up'||mode==='reset');
+  $('#fg').parentElement.hidden=mode!=='in';
+  $('#ap').autocomplete=mode==='in'?'current-password':'new-password';
+  $('#aerr').textContent=live?'':'This site is not connected to its database yet. Fill in config.js first.';
+  $('#aok').textContent='';
+  $('#ab').disabled=!live;
+  if(mode==='up'||mode==='reset')drawRules()}
+async function submitAuth(e){
+  e.preventDefault();
+  const n=$('#an').value.trim().replace(/\s+/g,' '),em=$('#ae').value.trim().toLowerCase(),p=$('#ap').value;
+  const err=m=>{$('#aerr').textContent=m;$('#aok').textContent=''},b=$('#ab'),label=b.textContent;
+  err('');
+  try{
+    if(mode==='forgot'){
+      if(!EMAIL.test(em))return err('Enter the email you signed up with.');
+      b.disabled=true;b.textContent='Sending…';
+      const r=await fetch(SB+'/auth/v1/recover?redirect_to='+encodeURIComponent(location.origin+location.pathname),{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({email:em})});
+      if(r.status===429)return err('Too many requests. Wait a few minutes and try again.');
+      $('#aok').textContent='If that email has an account, a reset link is on its way. Check your spam folder too.';
+      return}
+    if(mode==='reset'){
+      if(RULES.some(([l,f])=>!f(p,'')))return err('Your password needs to meet every rule listed.');
+      if(p!==$('#ap2').value)return err('The two passwords do not match.');
+      b.disabled=true;b.textContent='Saving…';
+      const r=await fetch(SB+'/auth/v1/user',{method:'PUT',headers:{apikey:KEY,Authorization:'Bearer '+RECOVERY.token,'Content-Type':'application/json'},body:JSON.stringify({password:p})});
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error(j.msg||j.message||j.error_description||'This reset link has expired. Request a new one.');
+      RECOVERY=null;history.replaceState(null,'',location.pathname);
+      $('#ap').value=$('#ap2').value='';showAuth('in');$('#aok').textContent='Password updated. Sign in with your new password.';return}
+    if(!EMAIL.test(em))return err('Enter a valid email address.');
+    if(mode==='up'){
+      if(n.length<2)return err('Enter your name (at least 2 characters).');
+      if(uname(n).length<2||uname(n).length>60)return err('Please use a shorter name.');
+      if(RULES.some(([l,f])=>!f(p,n)))return err('Your password needs to meet every rule listed.');
+      if(p!==$('#ap2').value)return err('The two passwords do not match.');
+      b.disabled=true;b.textContent='Creating…';
+      const ck=await fetch(SB+'/rest/v1/rpc/name_available',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({p_name:uname(n)})});
+      if(ck.ok&&(await ck.json())===false)return err('That name is already taken. Please add something, like a last initial.');
+      const j=await authCall('signup',{email:em,password:p,data:{display_name:n,username:uname(n)}});
+      if(!j.access_token){$('#aok').textContent='Almost there. Check your email to confirm your account, then sign in.';showAuth('in');$('#aok').textContent='Almost there. Check your email to confirm your account, then sign in.';return}
+      setSession(j);
+    }else{
+      if(!p)return err('Enter your password.');
+      b.disabled=true;b.textContent='Opening…';
+      setSession(await authCall('token?grant_type=password',{email:em,password:p}));
+    }
+    $('#ap').value=$('#ap2').value='';
+    await load();hub();
+  }catch(x){
+    const m=String(x.message||x);
+    err(/already registered|already been registered/i.test(m)?'That email already has an account. Try signing in.':/invalid login/i.test(m)?'Email or password is wrong.':/database error/i.test(m)?'That name may already be taken. Try another.':m);
+    if(mode==='in'||mode==='up'){S=null;try{localStorage.removeItem(SK)}catch(_){}}
+  }finally{b.disabled=false;b.textContent=label}}
+
+/* ---------- Hall and rooms ---------- */
+function hub(){
+  show('hub');cur=null;NEW=new Set();
+  $('#me').textContent=myName();
+  $('#greet').textContent='Welcome, '+myName();
+  $('#doors').innerHTML=rooms.map((r,i)=>`<button class="door${unread(r).length?' has-new':''}" style="--i:${i}" data-r="${esc(r.id)}">${unread(r).length?`<span class="dot">${unread(r).length} new</span>`:''}<span class="sig">${esc(r.e)}</span><span class="meta">${r.type==='duo'?'Duo, sealed for two':'Group, '+r.m.length+' members'}</span><h3>${esc(r.name)}</h3><span class="avs">${r.m.slice(0,5).map(x=>av(x.id,x.n)).join('')}${r.m.length>5?`<b class="av" style="--c:#6b6377">+${r.m.length-5}</b>`:''}</span><small>${r.mem.length} ${r.mem.length===1?'memory':'memories'}</small><span class="enter">Step inside</span></button>`).join('')
+  +`<button class="door new" style="--i:${rooms.length}" data-new><span class="sig">＋</span><h3>Open a new chamber</h3><small>A duo for two, or a hall for many</small></button>`;
+  refreshTitle();drawBell();hello()}
+
+function enterRoom(id){const r=rooms.find(x=>x.id===id);if(!r)return;go(()=>{const same=cur&&cur.id===id;cur=rooms.find(x=>x.id===id)||r;if(!same)NEW=new Set(unread(cur).map(m=>m.id));room()})}
+
+function room(){
+  const r=cur;show('room');markSeen(r);
+  $('#rname').textContent=r.name;
+  $('#rbadge').textContent=r.type==='duo'?'Duo chamber, sealed for two':'Group hall, '+r.m.length+' members';
+  $('#rmem').innerHTML=r.m.slice(0,8).map(x=>av(x.id,x.n)).join('')+(r.m.length>8?`<b class="av" style="--c:#6b6377">+${r.m.length-8}</b>`:'');
+  $('#inv').hidden=!(r.type==='group'&&r.owner===myId());
+  $('#rsub').textContent=(r.type==='duo'?'Only these two keys open this door.':'Only invited members can see or add memories here.');
+  $('#cards').innerHTML=r.mem.length?r.mem.map((m,i)=>`<article class="card${NEW.has(m.id)?' fresh':''}" style="--i:${i};--c:${colorOf(m.by)}">${NEW.has(m.id)?'<span class="flag">NEW</span>':''}${m.p?`<img class="ph" loading="lazy" data-p="${esc(m.p)}" alt="Photo: ${esc(m.t)}">`:''}<span class="em">${esc(m.e)}</span><h3>${esc(m.t)}</h3><p>${esc(m.x)}</p><div class="by">${av(m.by,m.bn)} ${esc(m.bn)} · ${esc(m.d)}${m.by===myId()?`<button class="del" data-del="${esc(m.id)}" aria-label="Take down ${esc(m.t)}">Take down</button>`:''}</div></article>`).join(''):'<p class="sub">The walls are bare. Hang the first memory.</p>';
+  const paths=r.mem.map(m=>m.p).filter(Boolean);
+  if(paths.length)sign(paths).then(()=>document.querySelectorAll('#cards img[data-p]').forEach(i=>{const c=sigCache[i.dataset.p];if(c)i.src=c.u})).catch(()=>{})}
+
+function memory(){
+  if(!cur)return;
+  let em='🌙',ph='';
+  sheet(`<p class="eyebrow">Posting as ${esc(myName())}</p><h3>Hang a memory</h3><label class="pick" id="pk" for="ph"><span>📷 Add a photo</span></label><input type="file" id="ph" accept="image/*" hidden><input id="mt" class="in" placeholder="Title" maxlength="50"><textarea id="mx" class="in" placeholder="Write a note to go with it…" maxlength="400"></textarea><div class="chips" id="ems">${['🌙','🌹','✨','🎶','🌊','🕯️'].map(e=>`<button class="chip${e===em?' on':''}">${e}</button>`).join('')}</div><button class="btn" id="save">Hang it on the wall</button>`);
+  $('#ph').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{ph=await shrink(f);$('#pk').innerHTML=`<img src="${ph}" alt="Selected photo"><span>Change photo</span>`}catch(x){toast('Couldn’t read that photo. Try another.')}};
+  $('#ems').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;em=b.textContent;[...$('#ems').children].forEach(c=>c.classList.toggle('on',c===b))};
+  $('#save').onclick=async()=>{
+    const t=$('#mt').value.trim(),x=$('#mx').value.trim(),btn=$('#save');
+    if(!t||(!x&&!ph))return toast('Add a title, plus a photo or a note.');
+    const d=new Date().toLocaleDateString('en',{month:'short',day:'numeric'});
+    btn.disabled=true;btn.textContent='Hanging…';
+    try{
+      let path='';
+      if(ph){const b=await (await fetch(ph)).blob();path=cur.id+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';
+        await api('/storage/v1/object/photos/'+path,{method:'POST',headers:{'Content-Type':'image/jpeg'},body:b})}
+      await api('/rest/v1/memories',{method:'POST',headers:{'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({room_id:cur.id,title:t,note:x,photo:path,author_id:myId(),emoji:em,day:d})});
+      await load();shut();if(cur)room();toast('✨ Memory hung.')
+    }catch(err){btn.disabled=false;btn.textContent='Hang it on the wall';toast('Couldn’t save: '+err.message)}}}
+
+function confirmDel(id){
+  const m=cur&&cur.mem.find(x=>x.id===id);if(!m)return;
+  sheet(`<p class="eyebrow">Are you sure?</p><h3>Take this memory down?</h3><p class="sub">“${esc(m.t)}”${m.p?' and its photo':''} will be removed from the wall for everyone in this chamber. This can’t be undone.</p><div class="acts"><button class="btn warn" id="dy">Yes, take it down</button><button class="ghost" id="dn">Keep it</button></div>`);
+  $('#dn').onclick=shut;
+  $('#dy').onclick=()=>takeDown(id)}
+
+async function takeDown(id){
+  const r=cur,m=r&&r.mem.find(x=>x.id===id),b=$('#dy');if(!m||!b)return;
+  b.disabled=true;b.textContent='Taking down…';
+  try{
+    /* RLS hides rows you may not delete instead of raising an error, so ask for the deleted rows back and check */
+    const gone=await api('/rest/v1/memories?id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:{Prefer:'return=representation'}});
+    if(!Array.isArray(gone)||!gone.length)throw new Error('Couldn’t take that down. Only the person who hung a memory can remove it.');
+    if(m.p)api('/storage/v1/object/photos/'+m.p,{method:'DELETE'}).catch(()=>{});
+    r.mem=r.mem.filter(x=>x.id!==id);
+    shut();if(cur===r)room();toast('Memory taken down.')
+  }catch(e){b.disabled=false;b.textContent='Yes, take it down';toast(e.message)}}
+
+function chamber(){
+  let t='duo',who=[];
+  const draw=()=>{
+    $('#ty').innerHTML=[['duo','Duo: sealed for two'],['group','Group: many friends']].map(([k,l])=>`<button class="chip${k===t?' on':''}" data-t="${k}">${l}</button>`).join('');
+    $('#fr').innerHTML=who.map((w,i)=>`<button class="chip on" data-x="${i}" title="Remove">${esc(w.n)} ✕</button>`).join('');
+    $('#cap').textContent=t==='duo'?'Add exactly one person. They must already have an account.':'Add two or more people. They must already have accounts. You can invite more later.'};
+  sheet(`<p class="eyebrow">New chamber</p><h3>Open a new chamber</h3><div class="chips" id="ty"></div><input id="cn" class="in" placeholder="Name this chamber" maxlength="32"><div class="row"><input id="fn" class="in" placeholder="Friend’s exact name" maxlength="24"><button class="ghost" id="fa" type="button" style="margin-top:.4rem">Add</button></div><div class="chips" id="fr"></div><p class="sub" id="cap"></p><button class="btn" id="mk">Seal the door</button>`);
+  draw();
+  $('#ty').onclick=e=>{const b=e.target.closest('[data-t]');if(!b)return;t=b.dataset.t;if(t==='duo')who=who.slice(0,1);draw()};
+  $('#fr').onclick=e=>{const b=e.target.closest('[data-x]');if(!b)return;who.splice(+b.dataset.x,1);draw()};
+  const add=()=>{const n=$('#fn').value.trim().replace(/\s+/g,' ');if(!n)return;const u=uname(n);
+    if(u===uname(myName()))return toast('That is you. Add someone else.');
+    if(who.some(w=>w.u===u))return toast('Already added.');
+    if(t==='duo'&&who.length>=1)return toast('A duo holds just one companion.');
+    who.push({n,u});$('#fn').value='';draw();return true};
+  $('#fa').onclick=add;
+  $('#fn').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();add()}};
+  $('#mk').onclick=async()=>{
+    if($('#fn').value.trim()&&!add())return;
+    if(t==='duo'?who.length!==1:who.length<2)return toast(t==='duo'?'Type your friend’s name, then tap Add.':'A group needs at least two companions. You have added '+who.length+'.');
+    const n=$('#cn').value.trim()||(t==='duo'?'A Private Chamber':'The Gathering Hall'),b=$('#mk');
+    b.disabled=true;b.textContent='Sealing…';
+    try{await rpc('create_room',{p_name:n,p_type:t,p_emoji:t==='duo'?'🌹':'🕯️',p_members:who.map(w=>w.u)});await load();shut();hub();toast('✨ Your new door glows.')}
+    catch(e){b.disabled=false;b.textContent='Seal the door';toast(e.message)}}}
+
+function invite(){
+  if(!cur)return;
+  sheet(`<p class="eyebrow">${esc(cur.name)}</p><h3>Invite someone</h3><p class="sub">Type their exact name. They need to have created an account first.</p><input id="iv" class="in" placeholder="Friend’s exact name" maxlength="24"><button class="btn" id="ivb">Invite</button>`);
+  $('#ivb').onclick=async()=>{const n=$('#iv').value.trim();if(!n)return;const b=$('#ivb');b.disabled=true;
+    try{await rpc('add_member',{p_room:cur.id,p_name:uname(n)});await load();shut();if(cur)room();toast('✨ They now hold a key.')}
+    catch(e){b.disabled=false;toast(e.message)}}}
+
+document.addEventListener('click',e=>{
+  const q=s=>e.target.closest(s);let x;
+  if(e.target.id==='sheet')shut();
+  else if(x=q('#am [data-m]'))showAuth(x.dataset.m);
+  else if(q('#out'))signOut();
+  else if(q('#bell'))toggleBell();
+  else if(x=q('[data-del]'))confirmDel(x.dataset.del);
+  else if(q('#fg'))showAuth('forgot');
+  else if(x=q('[data-r]'))enterRoom(x.dataset.r);
+  else if(q('[data-new]'))chamber();
+  else if(q('#back'))go(async()=>{try{await load()}catch(_){}hub()});
+  else if(q('#add'))memory();
+  else if(q('#inv'))invite();
+  else if(q('#knock'))openGate();
+  else if(x=q('.ph')){if(x.src)sheet(`<img class="big" src="${x.src}" alt="">`)}
+});
+$('#af').addEventListener('submit',submitAuth);
+$('#ap').addEventListener('input',()=>{if(mode==='up')drawRules()});
+$('#an').addEventListener('input',()=>{if(mode==='up')drawRules()});
+if(RECOVERY){$('#gate').remove();showAuth(RECOVERY.token?'reset':'in');if(RECOVERY.error){$('#aerr').textContent='That reset link is invalid or has expired. Request a new one.';history.replaceState(null,'',location.pathname);RECOVERY=null}}
+async function poll(){
+  if(!live||!S||$('#gate')||$('#sheet').classList.contains('on')||!$('#auth').hidden)return;
+  const a=sig();try{await load()}catch(e){return}
+  const fresh=arrivals();
+  if(cur)fresh.forEach(x=>{if(x.r.id===cur.id)NEW.add(x.m.id)});
+  if(sig()!==a){if(!$('#room').hidden){if(cur)room();else hub()}else hub()}
+  announce(fresh)}
+setInterval(poll,15000);
+</script>
+</body>
+</html>
